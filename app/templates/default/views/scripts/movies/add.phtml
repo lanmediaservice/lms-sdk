@@ -1,0 +1,102 @@
+<?php $this->headLess()->appendStylesheet($this->findPath('css/movies.less'));?>
+<?php $this->headScript()->appendFile($this->findPath('js/LMS/Kinopoisk/UI.js')); ?>
+<?php $this->headScript()->appendFile($this->findPath('js/LMS/Kinopoisk/Action.js')); ?>
+<?php $this->headScript()->captureStart() ?>
+    LMS.Action.addMethods(LMS.Kinopoisk.Action);
+    LMS.UI.addMethods(LMS.Kinopoisk.UI);
+    LMS.Connector.connect(action, 'postSearch', ui, 'showSearchResults');
+    LMS.Connector.connect(action, 'postParseMovie', ui, 'showMovieInfo');
+    LMS.Connector.connect(action, 'postParseMovie', action, 'setKinopoiskId');
+    var STATUSES = <?php echo Zend_Json::encode($this->statuses);?>;
+<?php $this->headScript()->captureEnd(); ?>
+<?php $this->jsTemplate()->captureStart('MOVIEINFO') ?>
+    {if duplicates}
+        <?php $this->assistant(null, null)->captureStart(); ?>
+            <table><tr><td>
+                <?php echo $this->icon('warn', 32);?>
+            </td><td>
+               <?php echo $this->t->_('Movie is duplicate'); ?>
+                <ul>
+                    {for duplicate in duplicates}
+                        <li> 
+                            <a href="javascript:window.ui.navigateToMovie(${duplicate.wish_id})">
+                                ${duplicate.subject}
+                            </a>
+                            (${duplicate.created_at})                    
+                        </li>
+                    {/for}
+                </ul>
+            </td></tr></table>
+        <?php echo $this->assistant()->captureEnd(); ?>
+    {/if}
+    <img src="${posters[0]}" class="cover">
+    <table>
+    <tr><td class="names" colspan="2">${names.join(' / ')} (${year})</td></tr>
+    {if countries.length}
+    <tr><td><?php echo $this->t->_('Countries');?>:</td><td>${countries.join(', ')}</td></tr>
+    {/if}
+    {if genres.length}
+    <tr><td><?php echo $this->t->_('Genres');?>:</td><td>${genres.join(', ')}</td></tr>
+    {/if}
+    <tr><td><?php echo $this->t->_('Director(s)');?>:</td><td>${directors.join(', ')}</td></tr>
+    <tr><td><?php echo $this->t->_('Cast');?>:</td><td>${cast.join(', ')}</td></tr>
+    {if defined('rating')}
+        {if !Object.isUndefined(rating.imdb)}
+            <tr><td><?php echo $this->icon('imdb', 16)->setTitle($this->t->_('IMDB Rating'));?></td><td>${rating.imdb.value} (${rating.imdb.count})</td></tr>
+        {/if}
+        {if !Object.isUndefined(rating.kinopoisk)}
+        <tr><td><?php echo $this->icon('kinopoisk', 16)->setTitle($this->t->_('KinoPoisk.RU Rating'));?></td><td>${rating.kinopoisk.value} (${rating.kinopoisk.count})</td></tr>
+        {/if}
+    {/if}
+    <tr><td colspan="2">${description}</td></tr>
+    </table>
+<?php $this->jsTemplate()->captureEnd() ?>
+<?php $this->jsTemplate()->captureStart('SEARCH_RESULTS') ?>
+    {if results.length}
+        <ol>
+        {for result in results}
+            <li {if parseInt(result.is_blocked)} class="disabled" {/if}><a href="javascript:action.parseMovie(${result.kinopoisk_id});">${result.names.join(' / ')} (${result.year})</a> {if parseInt(result.is_blocked)} &mdash;  ${result.block_reason}{/if}</li>
+        {/for}
+        </ol>
+        <div id="search_results_enginelogo" ><?php echo $this->t->_('Search Using');?> <?php echo $this->image('img/kinopoisk-logo.png');?></div>
+        <br style="clear:both">
+    {else}
+        <?php echo $this->t->_('No matches. Try change query.');?>
+    {/if}
+<?php $this->jsTemplate()->captureEnd() ?>
+
+<div class="add-form">
+    <h1>Добавить фильм</h1>
+    <?php if ($this->formErrors):?>
+        <div class="errors block"><ul><li><?php echo implode("</li><li>", $this->formErrors);?></li></ul></div>
+    <?php endif;?>
+    <ul>
+        <li class="step-1">
+            <div class="label"><?php echo $this->t->_('Type movie name'); ?>:</div>
+            <div class="block">
+                <input type="text" id="query_text" name="query_text" onkeyup="if (window.ui.isEnterKey(event)) window.action.searchMovie();">
+                <a class="minibutton" onclick="window.action.searchMovie();"><span><?php echo $this->t->_('Go Search'); ?></span></a>
+            </div>
+        </li>
+        <li class="step-2 hidden">
+            <div class="label"><?php echo $this->t->_('Select movie'); ?>:</div>
+            <div id="search_results" class="block"></div>
+        </li>
+
+        <li class="step-3 hidden">
+            <div id="movie_info" class="block"></div>
+        </li>
+
+        <li class="step-3 hidden">
+            <form action="<?php echo $this->url(); ?>" method="post" id="add_movie_from">
+                <div class="label"><?php echo $this->t->_('Description'); ?>:</div>
+                <div class="block">
+                    <input type="hidden" name="kinopoisk_id" id="kinopoisk_id">
+                    <textarea name="description" class="description"></textarea>
+                    <div class="submit">
+                        <a class="button classy" onclick="$('add_movie_from').submit();"><span><?php echo $this->t->_('Submit movie'); ?></span></a>
+                    </div>
+                </div>
+            </form>
+        </li>
+</div>

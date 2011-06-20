@@ -1,0 +1,44 @@
+<?php 
+    $photo = $this->person->getPhoto()? $this->thumbnail($this->person->getPhoto()) : $this->image('img/nophoto.png');
+?>
+<div class="person">
+    <div class="photo">
+        <?php echo $photo; ?>
+    </div>
+    
+    <div class="title">
+        <?php echo $this->person->getName(); ?>
+    </div>
+    <?php if ($this->person->getInternationalName()): ?>
+        <div class="subtitle">
+            <?php echo $this->person->getInternationalName(); ?>
+        </div>
+    <?php endif; ?>
+    <div class="summary">
+        <div class="row"><div>Карьера:</div> <div><?php echo $this->person->getProfile();?>&nbsp;</div></div>
+        <div class="row"><div>Дата рождения:</div> <div><?php echo $this->person->getBornDate();?>&nbsp;</div></div>
+        <div class="row"><div>Место рождения:</div> <div><?php echo $this->person->getBornPlace();?>&nbsp;</div></div>
+    </div>
+    <div class="info">
+        <?php echo $this->person->getInfo(); ?>
+    </div>
+    <a class="link minibutton" target="_blank" href="<?php echo $this->person->getUrl(); ?>"><span>Подробности на KP.RU</span></a>
+    <br style="clear: both;">
+    <div class="movies">
+    <?php foreach ($this->person->getMoviesAsStruct() as $movieStruct): ?>
+        <?php 
+            $movie = $movieStruct['movie'];
+        ?>
+        <div class="movie-row">
+            <a href="<?php echo $this->url(array('action' => 'movie', 'id' => $movie->getId()), 'movies', true); ?>">
+                <?php echo $movie->getName();?>
+                (<?php echo $movie->getYear();?>)
+            </a>
+            <span class="roles">
+                (<?php echo implode(', ', $movieStruct['roles']); ?>)
+            </span>
+        </div>
+    <?php endforeach;?>
+    </div>
+    <br style="clear: both;">
+</div> 

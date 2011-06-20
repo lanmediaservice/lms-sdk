@@ -1,0 +1,51 @@
+<div class="frame catalog active" data-path="<?php echo $this->thisPath;?>">
+    <?php if (count($this->movies)):?>
+        <?php 
+            $imageDvdBox = $this->image('img/dvd-box-100px.png')->setClass('box'); 
+        ?>
+        <?php foreach ($this->movies as $num => $movie): ?>
+            <?php $url = $this->url(array('action' => 'movie', 'id' => $movie->getId()), 'movies', true); ?>
+            <div class="item" mid="<?php echo $movie->getId();?>">
+                <div class="cover">
+                    <a href="<?php echo $url;?>">
+                        <?php echo $this->thumbnail($movie->getCover(), 100)->setClass('cover');?>
+                        <?php echo $imageDvdBox;?>
+                    </a>
+                </div>
+                <div class="title">
+                    <div class="year"><?php echo $movie->getYear();?></div>
+                    <a title="<?php echo $movie->getName(); ?>" href="<?php echo $url;?>">
+                        <?php echo $movie->getName(); ?>
+                    </a>
+                </div>
+                <?php foreach ($movie->getRatings() as $rating): ?>
+                    <?php if($rating->getCount()):?>
+                        <div class="starbar <?php echo $rating->getSystem();?>"
+                             title="<?php echo $this->t->_('Rating');?>: <?php echo $rating->getValue();?> (<?php echo $rating->getCount();?> <?php echo $this->t->_('votes');?>)"
+                        >
+                            <div class="inner" style="width:<?php echo $rating->getValue()*10; ?>%"></div>
+                        </div>
+                    <?php endif;?>
+                <?php endforeach;?>
+                <?php if ($movie->getInternationalName()): ?>
+                    <?php echo $this->textBlock($movie->getInternationalName(), 25)->setClass('subtitle');?>
+                <?php endif;?>
+                <?php echo $this->textBlock($movie->getGenresAsString(), 40)->setClass('genre');?>
+                <?php echo $this->textBlock($movie->getDirectorAsString(), 35)->setClass('director');?>
+                <?php echo $this->textBlock($movie->getCastAsString(), 100)->setClass('cast');?>
+
+                <div class="bottom-panel">
+                    <a href="<?php echo $url;?>" class="minibutton btn-expand"><span>Подробнее &gt;&gt;</span></a>
+                </div>
+                <br style="clear: both;">
+            </div>
+        <?php endforeach;?>
+    <?php else: ?>
+        <div class="message">
+            <div>
+                <p>Не найдено ни одного фильма, соответствующего запросу. </p>
+                <p>Попробуйте уменьшить количество условий.</p>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>

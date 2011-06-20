@@ -1,0 +1,12 @@
+<div class="catalog-mini">
+    <?php foreach ($this->movies as $num => $movie): ?>
+        <?php $url = $this->url(array('action' => 'movie', 'id' => $movie->getId()), 'movies', true); ?>
+        <div class="item" mid="<?php echo $movie->getId();?>">
+            <div class="cover">
+                <a href="<?php echo $url;?>">
+                    <?php echo $this->thumbnail($movie->getCover(), 32);?>
+                </a>
+            </div>
+        </div>
+    <?php endforeach;?>                 
+</div>

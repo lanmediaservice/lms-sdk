@@ -1,0 +1,62 @@
+<ul id="nav">
+    <li class="">
+        <span class="section-header" onclick="this.parentNode.toggleClassName('collapsed');">Жанры</span>
+        <ul id="genres" class="submenu">
+            <?php /*
+            <li><a href="<?php echo $this->navUrl('conditions', array());?>" onclick="return window.ui.clickHandler(event);"> Все</a></li>
+             */?>
+            <?php foreach (Lms_Item_Genre::select() as $genre): ?>
+                <?php $status = Lms_Navigator::getStatus($this->view['conditions'], 'genre', $genre->getId());?>
+                <li class="<?php 
+                        switch ($status) {
+                            case Lms_Navigator::STATUS_INCLUDED:
+                                echo "selected";
+                                break;
+                            case Lms_Navigator::STATUS_EXCLUDED:
+                                echo "unselected";
+                                break;
+                        } 
+                    ?>"
+                >
+                    <a onclick="return window.ui.navOnClick(this);"
+                       href="<?php echo $this->navUrl('conditions', array(array("field"=>'genre',"operator"=>"equal","argument"=>$genre->getId())));?>"
+                       data-href-plus="<?php echo $this->navUrl('conditions', array("field"=>'genre',"operator"=>"equal","argument"=>$genre->getId()), Lms_View_Helper_NavUrl::MERGE_ADD);?>"
+                       data-href-minus="<?php echo $this->navUrl('conditions', array("field"=>'genre',"operator"=>"notequal","argument"=>$genre->getId()), Lms_View_Helper_NavUrl::MERGE_ADD);?>"
+                    >
+                        <?php echo $genre->getName(); ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </li>
+    <li class="collapsed">
+        <span class="section-header" onclick="this.parentNode.toggleClassName('collapsed');">Страны</span>
+        <ul id="countries" class="submenu">
+            <?php /*
+            <li><a href="<?php echo $this->navUrl('conditions', array());?>" onclick="return window.ui.clickHandler(event);"> Все</a></li>
+             */?>
+            <?php foreach (Lms_Item_Country::select() as $country): ?>
+                <?php $status = Lms_Navigator::getStatus($this->view['conditions'], 'country', $country->getId());?>
+                <li class="<?php 
+                        switch ($status) {
+                            case Lms_Navigator::STATUS_INCLUDED:
+                                echo "selected";
+                                break;
+                            case Lms_Navigator::STATUS_EXCLUDED:
+                                echo "unselected";
+                                break;
+                        } 
+                    ?>"
+                >
+                    <a onclick="return window.ui.navOnClick(this);"
+                       href="<?php echo $this->navUrl('conditions', array(array("field"=>'country',"operator"=>"equal","argument"=>$country->getId())));?>"
+                       data-href-plus="<?php echo $this->navUrl('conditions', array("field"=>'country',"operator"=>"equal","argument"=>$country->getId()), Lms_View_Helper_NavUrl::MERGE_ADD);?>"
+                       data-href-minus="<?php echo $this->navUrl('conditions', array("field"=>'country',"operator"=>"notequal","argument"=>$country->getId()), Lms_View_Helper_NavUrl::MERGE_ADD);?>"
+                    >
+                        <?php echo $country->getName(); ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </li>
+</ul>

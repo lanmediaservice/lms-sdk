@@ -1,0 +1,18 @@
+<type>movie</type>
+<div id="toolbar" class="toolbar">
+    <ul class="breadcrumb">
+        <li>
+            <a href="<?php echo $this->url(array('action' => 'index'), 'movies', true);?>" class="pictos">
+                H
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->url(array('action' => 'index'), 'movies', true);?>" onclick="return window.ui.onBackToCatalog(this);">Каталог</a>
+        </li>
+        <li>
+            <a><?php echo $this->movie->getName();?></a>
+        </li>
+    </ul>
+</div>
+<?php echo $this->render('movie.phtml');?>
+<div class="paginator"></div>

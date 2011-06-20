@@ -1,0 +1,6 @@
+<type>catalog</type>
+<?php echo $this->render('movies/include/toolbar.phtml');?>
+<?php echo $this->render('movies/include/nav.phtml');?>
+<?php echo $this->render('movies/include/catalog-mini.phtml');?>
+<?php echo $this->render('movies/include/catalog.phtml');?>
+<?php echo $this->paginator($this->paginator, 'paging.phtml');?>

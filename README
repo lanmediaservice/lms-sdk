@@ -1,0 +1,61 @@
+I. Системные требования.
+    ОС: Linux, FreeBSD
+    Вебсервер: Apache ( с модулем mod_rewrite и включенной обработкой .htaccess), nginx
+    PHP: 5.3 с поддержкой mbstring, iconv, mcrypt, mysql, hash, session, gd, dom, bcmath, ctype, json, simplexml
+    MySQL: 5.0 и выше
+	
+II. Инсталляция.
+a) Ручная из репозиториев
+    1. В домашней директории сайта (например, /www/mysite.com) создать каталог /apps и подкаталоги:
+        /lib  <-- https://github.com/lanmediaservice/lms-lib
+        /sharelib <-- https://github.com/lanmediaservice/lms-sharelib
+        /tplib <-- https://github.com/lanmediaservice/lms-tplib
+        /lms-jsf <-- https://github.com/lanmediaservice/lms.js
+        /lms-sdk <-- https://github.com/lanmediaservice/lms-sdk
+
+    2. Создать symlink /www/mysite.com/apps/lms-sdk/public/lms-jsf -> ../../lms-jsf
+
+    3. Открыть доступ для вебсервера к каталогу /apps/lms-sdk/public одним из следующих способов:
+        а) Созданием symlink в каталоге вебсервера,например:
+            /www/mysite.com/public_html/lms-sdk -> /www/mysite.com/apps/lms-sdk/public
+            чтобы скрипт был доступен по адресу http://mysite.com/lms-sdk
+
+        б) Созданием symlink самого каталога вебсервера,например:
+            /www/mysite.com/public_html -> /www/mysite.com/apps/lms-sdk/public
+            чтобы скрипт был доступен по адресу http://mysite.com/
+        
+        в) Настройкой переменной DocumentRoot в Apache:
+            DocumentRoot /www/mysite.com/apps/lms-sdk/public
+
+        в) Настройкой переменной root в nginx:
+            root /www/mysite.com/apps/lms-sdk/public;
+
+    4. Создать базу данных MySQL в кодировке utf8 и запустить в ней SQL-скрипт /apps/lms-sdk/app/db/schema.sql
+    
+    5. В директории /apps/lms-sdk сделать копии (исходные файлы должны быть сохранены) файлов:
+        /public/config.dist.php -> /public/config.php
+        /app/config.dist.php -> /app/config.php
+        /app/local.settings.dist.php -> /app/local.settings.php
+    
+    6. В файле local.settings.php настроить параметры:
+        $config['parser_service']['username']
+        $config['parser_service']['password']
+        $config['databases']['main']
+    
+    7. В директории /apps/lms-sdk установить права на запись (если отсутствуют) для директорий:
+        /media
+        /app/
+        /app/logs
+        /app/includes
+        /app/includes/Lms/Item/Struct
+        
+б) Ручная из дистрибутивной сборки
+   Пока не реализовано...
+
+
+По всем вопросам обращаться:
+WWW:   http://support.lanmediaservice.com/
+Email: support@lanmediaservice.com
+
+© ООО «ЛанМедиаСервис», 2006—2011
+http://www.lanmediaservice.com/

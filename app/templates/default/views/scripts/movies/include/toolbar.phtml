@@ -1,0 +1,61 @@
+<div id="toolbar" class="toolbar">
+    <ul class="breadcrumb">
+        <li>
+            <a href="<?php echo $this->url(array('action' => 'index', 'search_text' => null), 'movies', true);?>" class="pictos">
+                H
+            </a>
+        </li>
+        <li>
+            <a>Каталог</a>
+        </li>
+    </ul>
+    <ul class="built-in">
+        <li>
+            <a>по <?php echo $this->view['rop']; ?> шт. ▼</a>
+            <ul class="right">
+                <li><a href="<?php echo $this->navUrl('rop', 6);?>">по 6 на страницу</a></li>
+                <li><a href="<?php echo $this->navUrl('rop', 8);?>">по 8 на страницу</a></li>
+                <li><a href="<?php echo $this->navUrl('rop', 9);?>">по 9 на страницу</a></li>
+                <li><a href="<?php echo $this->navUrl('rop', 10);?>">по 10 на страницу</a></li>
+                <li><a href="<?php echo $this->navUrl('rop', 12);?>">по 12 на страницу</a></li>
+                <li><a href="<?php echo $this->navUrl('rop', 18);?>">по 18 на страницу</a></li>
+            </ul>
+        </li>
+    </ul>
+    <ul class="built-in">
+        <li>
+            <a><?php 
+                switch ($this->view['sort']['field']) {
+                    case "year":
+                        echo "Новинки";
+                        break;
+                    case "rating_imdb":
+                        echo "Лучшие (IMDB)";
+                        break;
+                    case "rating_kinopoisk":
+                        echo "Лучшие (KinoPoisk.RU)";
+                        break;
+                    case "added_at":
+                        echo "Последние";
+                        break;
+                    default:
+                        echo $this->view['sort']['field'];
+                        break;
+                }
+            ?> ▼</a>
+            <ul class="right">
+                <li><a title="упорядочить по году выхода" href="<?php echo $this->navUrl('sort', array("field"=>"year","dir"=>"desc"));?>">Новинки</a></li>
+                <li><a title="упорядочить по рейтингу IMDB" href="<?php echo $this->navUrl('sort', array("field"=>"rating_imdb","dir"=>"desc"));?>">Лучшие (IMDB)</a></li>
+                <li><a title="упорядочить по рейтингу KinoPoisk.RU" href="<?php echo $this->navUrl('sort', array("field"=>"rating_kinopoisk","dir"=>"desc"));?>">Лучшие (KinoPoisk.RU)</a></li>
+                <li><a title="упорядочить по дате добавления" href="<?php echo $this->navUrl('sort', array("field"=>"added_at","dir"=>"desc"));?>">Последние</a></li>
+            </ul>
+        </li>
+    </ul>
+    <ul class="search">
+        <li>
+            <form method="get" action="<?php echo $this->url(array('search_text'=>null), null, false);?>">
+                <input type="text" name="search_text" placeholder="Найти ..." value="<?php echo $this->searchText;?>">
+            </form>
+        </li>
+    </ul>
+</div>

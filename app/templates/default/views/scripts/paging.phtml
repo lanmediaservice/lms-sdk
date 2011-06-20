@@ -1,0 +1,29 @@
+<div class="paginator">
+    <ul>
+        <li class="prev<?php echo !isset($this->previous)? ' disabled': '';?>">
+        <?php if (isset($this->previous)):?>
+            <a href="<?php echo $this->url(array('page'=> $this->previous));?>">←</a>
+        <?php else:?>
+            <a>←</a>
+        <?php endif;?>
+        </li>
+        <?php foreach ($this->pages as $page => $pageOptions) : 
+             if ($page !=$this->current):
+                if ($pageOptions['short']):
+                    ?><li class="short"><a href="<?php echo $this->url(array('page'=> $page));?>">.</a></li><?php 
+                else: ?>
+                    <li class="default"><a href="<?php echo $this->url(array('page'=> $page));?>"><?php echo Lms_Paginator::simplifyNumber($page); ?></a></li>
+                <?php endif;
+             else: 
+                ?><li class="current"><a href="<?php echo $this->url(array('page'=> $page));?>"><?php echo $page;?></a></li><?php 
+             endif;
+        endforeach;?>
+        <li class="next<?php echo !isset($this->next)? ' disabled': '';?>">
+        <?php if (isset($this->next)): ?>
+            <a href="<?php echo $this->url(array('page'=>$this->next));?>">→</a>
+        <?php else:?>
+            <a>→</a>
+        <?php endif;?>
+        </li>
+    </ul>
+</div>

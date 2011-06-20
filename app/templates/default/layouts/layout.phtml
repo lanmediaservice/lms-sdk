@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en" class="no-js">
+    <head>
+        <meta charset="utf-8">
+
+        <!-- www.phpied.com/conditional-comments-block-downloads/ -->
+        <!--[if IE]><![endif]-->
+
+        <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame 
+           Remove this if you use the .htaccess -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <!--  Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+        <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+        <link rel="shortcut icon" href="<?php echo $this->findPath('img/favicon.png');?>" type="image/png">
+        <link rel="apple-touch-icon" href="<?php echo $this->findPath('img/apple-touch-icon.png');?>">
+
+        <title><?php echo $this->escape($this->title); ?></title>
+        <script type="text/javascript">
+            //<![CDATA[
+            var TEMPLATE_URL = '<?php $t = end($this->publicTemplates); echo $t['url']; ?>';
+            var ROOT_URL = '<?php echo $this->rootUrl;?>';
+            var API_URL = '<?php echo $this->rootUrl;?>/api.php?format=ajax&lang=<?php echo $this->lang?>';
+            var TEMPLATES = {};
+            var SETTINGS = {};
+            less = { env: 'development' };
+            //]]>
+        </script>
+        <script type="text/javascript" src="<?php echo $this->findPath('js/modernizr-1.5.min.js');?>"></script>
+ 
+        <?php $i = -100; ?>
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/prototype/prototype-1.6.0.3.js'));?>
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/scriptaculous/scriptaculous.js'));?>
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/scriptaculous/effects.js'));?>
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/trimpath/template.js'));?>
+        
+        <?php $this->headScript()->offsetSetFile($i++, $this->lmsJsfPath . '/JSAN.js');?>
+        <?php $this->headScriptOffsetCapture()->captureStart($i++); ?>
+            JSAN.includePath   = ['<?php echo $this->lmsJsfPath; ?>', '<?php $template = end($this->publicTemplates); echo $template['url'] . "/js"; ?>'];
+            JSAN.errorLevel = "warn";
+        <?php $this->headScriptOffsetCapture()->captureEnd(); ?>
+
+        <?php $this->headScript()->offsetSetFile($i++, "{$this->lmsJsfPath}/LMS.js"); //optimization ?>
+        <?php $this->headScript()->offsetSetFile($i++, "{$this->lmsJsfPath}/LMS/Connector.js");  //optimization?>
+        <?php $this->headScript()->offsetSetFile($i++, "{$this->lmsJsfPath}/LMS/Signalable.js");  //optimization?>
+        <?php $this->headScript()->offsetSetFile($i++, "{$this->lmsJsfPath}/LMS/Widgets.js");  //optimization?>
+        <?php $this->headScript()->offsetSetFile($i++, "{$this->lmsJsfPath}/LMS/Widgets/Factory.js");  //optimization?>
+        <?php $this->headScript()->offsetSetFile($i++, "{$this->lmsJsfPath}/LMS/i18n.js"); //optimization ?>
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/LMS/i18n/' . $this->lang . '.js')); //optimization ?>
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/LMS/i18n/' . $this->lang . '/Main.js')); //optimization ?>
+        <?php $this->headScriptOffsetCapture()->captureStart($i++); ?>
+            JSAN.require('LMS.Widgets.Factory');
+            JSAN.require('LMS.i18n');
+            JSAN.require('LMS.i18n.<?php echo $this->lang; ?>.Main');  
+        <?php $this->headScriptOffsetCapture()->captureEnd(); ?>
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/JsHttpRequest/JsHttpRequest.js'));?>
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/JsHttpRequest/jhr_controller.js'));?>
+
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/default.js'));?>
+
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/LMS/UI.js'));?>
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/LMS/Action.js'));?>
+        <?php $this->headScript()->offsetSetFile($i++, $this->findPath('js/LMS/Ajax.js'));?>
+        <?php $this->headScriptOffsetCapture()->captureStart($i++); ?>
+            var ajax = new LMS.Ajax();
+            ajax.setApiUrl(API_URL);
+            var action = new LMS.Action();
+            action.setQueryMethod(function(requestParams, callback){ajax.exec(requestParams, callback)});
+            var ui = new LMS.UI();
+            LMS.Connector.connect('userError', ui, 'showUserError');
+            LMS.Connector.connect('userMessage', ui, 'showUserMessage');
+            LMS.Connector.connect('highlightElement', ui, 'highlightElement');
+            JsHttpRequest.JHRController.SysMessenger = function(text) {
+                ui.showUserError(500, text, 'warn');
+            }
+
+        <?php $this->headScriptOffsetCapture()->captureEnd(); ?>
+        
+        <?php $this->headLink()->prependStylesheet($this->findPath('css/overlay.css'));?>
+        <?php $this->headLink()->prependStylesheet($this->findPath('css/menu.css'));?>
+        <?php $this->headLink()->prependStylesheet($this->findPath('css/form.css'));?>
+        <?php $this->headLink()->prependStylesheet($this->findPath('css/layout.css'));?>
+        <?php $this->headLink()->prependStylesheet($this->findPath('css/icons.css'));?>
+        <?php $this->headLink()->prependStylesheet($this->findPath('css/content.css'));?>
+        <?php $this->headLink()->prependStylesheet($this->findPath('css/reset.css'));?>
+
+        <?php echo $this->optimizedHeadLink(); ?>
+        <?php echo $this->headStyle(); ?>
+
+        <?php $this->headLess()->prependStylesheet($this->findPath('css/paginator.less'));?>
+        <?php $this->headLess()->prependStylesheet($this->findPath('css/functions.less'));?>
+        <?php echo $this->optimizedHeadLess(); ?>
+        <script type="text/javascript" src="<?php echo $this->findPath('js/less-1.0.41.min.js');?>"></script>
+
+        <?php echo $this->optimizedHeadScript(); ?>
+    </head>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+
+<!--[if lt IE 7 ]> <body class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <body class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <body class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <body class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <body> <!--<![endif]-->
+
+        <?php echo $this->layout()->authForm; ?>
+        <div id="container">
+            <header>
+                <?php echo $this->render('header.phtml');?>
+            </header>
+
+            <div id="main">
+                <?php echo $this->layout()->content; ?>
+            </div>
+
+            <footer>
+                <?php echo $this->render('footer.phtml') ?>
+            </footer>
+        </div> <!--! end of #container -->
+    </body>
+</html>

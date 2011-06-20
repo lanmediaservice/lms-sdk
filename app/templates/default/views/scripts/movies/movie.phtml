@@ -1,0 +1,41 @@
+<?php $this->headLess()->appendStylesheet($this->findPath('css/toolbar.less'));?>
+<?php $this->headLess()->appendStylesheet($this->findPath('css/movies.less'));?>
+<?php $this->headScript()->appendFile($this->findPath('js/LMS/Movies/UI.js')); ?>
+<?php $this->headScript()->appendFile($this->findPath('js/LMS/Movies/Action.js')); ?>
+<?php $this->headScript()->captureStart() ?>
+    LMS.Action.addMethods(LMS.Movies.Action);
+    LMS.UI.addMethods(LMS.Movies.UI);
+    LMS.Connector.connect(action, 'showPerson', ui, 'showPerson');
+    document.observe("dom:loaded", function() {
+        window.ui.init();
+    });
+<?php $this->headScript()->captureEnd(); ?>
+<div id="toolbar" class="toolbar">
+    <ul class="breadcrumb">
+        <li>
+            <a href="<?php echo $this->url(array('action' => 'index'), 'movies', true);?>" class="pictos">
+                H
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->url(array('action' => 'index'), 'movies', true);?>" onclick="return window.ui.onBackToCatalog(this);">Каталог</a>
+        </li>
+        <li>
+            <a><?php echo $this->movie->getName();?></a>
+        </li>
+    </ul>
+</div>
+<div class="body movie-view" id="body">  
+    <div class="sidebar a">
+        <?php echo $this->render('movies/include/nav.phtml');?>
+    </div>  
+    <div class="content">
+         <div class="slider" style="position: relative">
+             <div class="frames" id="content_frames">
+                <?php echo $this->render('movie.phtml');?>
+             </div>
+             <div class="catalog-mini"></div>
+         </div>
+     </div>  
+</div>
+<div class="paginator"></div>

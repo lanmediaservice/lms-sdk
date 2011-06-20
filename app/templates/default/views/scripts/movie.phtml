@@ -1,0 +1,109 @@
+<div class="frame movie active" mid="<?php echo $this->movie->getId();?>" data-path="<?php echo $this->thisPath;?>">
+    <?php $imageDvdBox = $this->image('img/dvd-box-120px.png')->setClass('box'); ?>
+    <div class="cover">
+        <?php echo $this->thumbnail($this->movie->getCover())->setClass('cover');?>
+        <?php echo $imageDvdBox;?>
+    </div>
+    <div class="title">
+        <?php echo $this->movie->getName();?>
+    </div>
+    <?php if ($this->movie->getInternationalName()): ?>
+        <div class="subtitle">
+            <?php echo $this->movie->getInternationalName();?>
+        </div>
+    <?php endif;?>
+    <div class="summary">
+        <div class="row"><div>Год:</div> <div><?php echo $this->movie->getYear();?></div></div>
+        <div class="row"><div>Страна:</div> <div><?php echo $this->movie->getCountriesAsString();?></div></div>
+        <div class="row"><div>Жанр:</div> <div><?php echo $this->movie->getGenresAsString();?></div></div>
+        <div class="row"><div>Режиссер:</div> <div><?php echo $this->movie->getDirectorAsString();?></div></div>
+        <div class="row"><div>Добавлен:</div> <div><?php echo $this->liveDatetime($this->movie->getAddedAt(), Lms_View_Helper_LiveDatetime::MODE_AGO);?></div></div>
+    </div>
+    <div class="rating">
+        <div class="summary">
+            <?php foreach ( $this->movie->getRatings() as $rating): ?>
+                <?php if($rating->getCount()):?>
+                    <div class="row"><div>Рейтинг 
+                    <?php if ($link = $rating->getLink()):?>
+                        <a href="<?php echo $this->escape($link);?>" target="_blank"><?php echo $this->t->_($rating->getSystem());?></a>
+                    <?php else:?>
+                        <?php echo $this->t->_($rating->getSystem());?>
+                    <?php endif;?>
+                    :</div> 
+                        <div>
+                            <div class="starbar big <?php echo $rating->getSystem();?>">
+                                <div class="inner" style="width:<?php echo $rating->getValue()*10; ?>%"></div>
+                            </div>
+                            <?php echo $rating->getValue(); ?>/10 (<?php echo number_format($rating->getCount(), null, ',', ' ');?> <?php echo $this->t->_('votes');?>)
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach;?>
+        </div>
+    </div>
+    <?php if ($this->movie->getTrailer()): ?>
+        <div class="trailer">
+            <?php 
+                $trailer = $this->movie->getTrailer();
+                $microImage = $this->thumbnail($trailer['preview'], 18);
+                $trailerName = isset($trailer['name'])? $trailer['name'] : 'Трейлер';
+            ?>
+            
+            <a onclick="window.ui.showTrailer();return false;" class="minibutton trailer-show"><span><span class="icon" style="background-image: url(<?php echo $microImage->getSrc();?>);"></span><?php echo $this->escape($trailerName); ?></span></a>
+            <div class="trailer-video" id="videoplayer">
+                <a class="close pictos" onclick="window.ui.closeTrailer();return false;">Q</a>
+                <?php 
+                    $videoUrl = $this->pathToUrl($trailer['video']);
+                    $previewUrl = $this->pathToUrl($trailer['preview']);
+                ?>
+                <object width="720" height="405">
+                    <param name="id" value="player" />
+                    <param name="allowFullScreen" value="true" />
+                    <param name="allowScriptAccess" value="always" />
+                    <param name="wmode" value="transparent" />
+                    <param name="movie" value="<?php echo $this->findPath('player/uppod.swf');?>" />
+                    <param name="flashvars" value="st=<?php echo $this->findPath('player/styles/style.txt');?>&amp;file=<?php echo $this->escape($videoUrl);?>&amp;poster=<?php echo $this->escape($previewUrl);?>" />
+                    <embed id="player" src="<?php echo $this->findPath('player/uppod.swf');?>" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" wmode="transparent" flashvars="st=<?php echo $this->findPath('player/styles/style.txt');?>&amp;file=<?php echo $this->escape($videoUrl);?>&amp;poster=<?php echo $this->escape($previewUrl);?>" width="720" height="405">
+                    </embed>
+                </object>   
+            </div>             
+        </div>
+    <?php endif;?>
+    <div class="info">
+        <?php echo Lms_Text::htmlSafeFilter($this->movie->getInfo()); ?>
+    </div>
+    <div class="extended-info">
+        <?php echo Lms_Text::htmlSafeFilter($this->movie->getExtendedInfo()); ?>
+    </div>
+    <div class="person-detail">
+        <div class="top-panel">
+            <a onclick="window.ui.hidePerson(<?php echo $this->movie->getId();?>);return false;" class="minibutton btn-expand"><span>X</span></a>
+        </div>
+        <div class="ident"></div>
+    </div>
+    <div class="persones">
+        <?php 
+            $noPhoto = $this->image('img/nophoto.png');
+            $i = 0;
+        ?>
+        <?php foreach ($this->movie->getPersonesAsStruct() as $personStruct): ?>
+            <?php 
+                $i++;
+                $person = $personStruct['person'];
+                $photo = $person->getPhoto()? $this->thumbnail($person->getPhoto(), 90) : $noPhoto;
+            ?>
+            <div class="person-preview<?php if ($i>5) echo ' more m' . $i; ?>" <?php if ($i>5) echo 'onmouseover="window.ui.slidePersones(this.parentNode, 1000)" onmouseout="window.ui.cancelSlidePersones()"'; ?> pid="<?php echo $person->getId();?>" onclick="window.ui.expandPerson(<?php echo $this->movie->getId();?>, <?php echo $person->getId();?>, this);return false;">
+                <div class="photo" style="background-image: url(<?php echo $photo->getSrc(); ?>);"></div>
+                <div class="title">
+                    <a onclick="return false;"  href="<?php echo $this->url(array('action' => 'person', 'id' => $person->getId()), 'movies', true); ?>">
+                        <?php echo $person->getName(); ?>
+                    </a>
+                    <div class="role">
+                        <?php echo implode(', ', $personStruct['roles']); ?>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach;?>
+    </div>
+    <div style="clear: both;"></div>
+</div>

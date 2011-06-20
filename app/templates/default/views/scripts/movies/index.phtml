@@ -1,0 +1,67 @@
+<?php $this->headLess()->appendStylesheet($this->findPath('css/toolbar.less'));?>
+<?php $this->headLess()->appendStylesheet($this->findPath('css/movies.less'));?>
+<?php $this->headLess()->appendStylesheet($this->findPath('css/message.less'));?>
+<?php $this->headScript()->appendFile($this->findPath('js/LMS/Movies/UI.js')); ?>
+<?php $this->headScript()->appendFile($this->findPath('js/LMS/Movies/Action.js')); ?>
+<?php $this->headScript()->captureStart() ?>
+    LMS.Action.addMethods(LMS.Movies.Action);
+    LMS.UI.addMethods(LMS.Movies.UI);
+    LMS.Connector.connect(action, 'showMovie', ui, 'showMovie');
+    LMS.Connector.connect(action, 'showPerson', ui, 'showPerson');
+    window.ui.loadMovieByAjax = 1;
+    
+    document.observe("dom:loaded", function() {
+        window.ui.init();
+    });
+    
+    
+    var owner = window.HTMLElement? window : document;
+//    owner.onkeyup = function(e) {CtrlUp = false;};
+    document.observe("keydown", function(e) {
+        if (!e) e = window.event;
+        var characterCode = e.which? e.which : e.keyCode;
+        switch (characterCode) {
+            case 17: //ctrl
+                window.ui.ctrlPressed = true;
+                $$('html')[0].addClassName('ctrl-pressed');
+                break;
+            case 18: //alt
+                window.ui.altPressed = true;
+                $$('html')[0].addClassName('alt-pressed');
+                break;
+            default: 
+        }
+    });
+    document.observe("keyup", function(e) {
+        if (!e) e = window.event;
+        var characterCode = e.which? e.which : e.keyCode;
+        switch (characterCode) {
+            case 17: //ctrl
+                window.ui.ctrlPressed = false;
+                $$('html')[0].removeClassName('ctrl-pressed');
+                break;
+            case 18: //alt
+                window.ui.altPressed = false;
+                $$('html')[0].removeClassName('alt-pressed');
+                break;
+            default: 
+        }
+    });
+    
+
+<?php $this->headScript()->captureEnd(); ?> 
+<?php echo $this->render('movies/include/toolbar.phtml');?>
+<div class="body catalog-view" id="body">  
+    <div class="sidebar a">
+        <?php echo $this->render('movies/include/nav.phtml');?>
+    </div>  
+    <div class="content">
+         <div class="slider" style="position: relative">
+             <div class="frames" id="content_frames">
+                <?php echo $this->render('movies/include/catalog.phtml');?>
+             </div>
+             <?php echo $this->render('movies/include/catalog-mini.phtml');?>
+         </div>
+     </div>  
+</div>
+<?php echo $this->paginator($this->paginator, 'paging.phtml');?> 

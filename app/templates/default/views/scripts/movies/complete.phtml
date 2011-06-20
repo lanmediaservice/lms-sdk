@@ -1,0 +1,14 @@
+<?php $this->headLess()->appendStylesheet($this->findPath('css/message.less'));?>
+<?php $this->headScript()->captureStart(); ?>
+    document.observe("dom:loaded", function() {
+            setTimeout(function() {
+                window.location = '<?php echo addslashes($this->redirectUrl);?>';
+            }, 2000);
+    });
+<?php $this->headScript()->captureEnd();?>
+<div class="message">
+    <div>
+        <p><?php echo $this->t->_('Thanks for adding movie');?></p>
+        <p><?php echo $this->t->_('Now you will be redirected to new movie');?></p>
+    </div>
+</div>
