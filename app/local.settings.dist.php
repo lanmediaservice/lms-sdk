@@ -53,8 +53,6 @@ $config['databases']['main'] = array(
 $config['parser_service']['username'] = 'demo';
 $config['parser_service']['password'] = 'demo';
 
-$config['symlinks'] = array('//lms-sdk' => dirname(dirname(__FILE__)) . '/public');
-$config['paths_map'] = array(
-    realpath($_SERVER['DOCUMENT_ROOT'] . '/lms-sdk') => $_SERVER['DOCUMENT_ROOT'] . '/lms-sdk'
-);
+$config['symlinks'] = array();
+$config['paths_map'] = array();
  

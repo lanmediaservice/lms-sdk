@@ -57,6 +57,14 @@ $config['langs']['default'] = 'en';
 $config['tmp'] = (isset($_ENV['TEMP']))? $_ENV['TEMP'] : '/tmp';
 
 /**
+ * Настройки аутентификации
+ */
+$config['auth']['cookie'] = array('key' => 'SECRET_KEY1234',
+                                  'cookieName' => 'lms_auth',
+                                  'cookiePath' => '/',
+                                  'cookieExpire' => (time() + 3600*24*60));
+
+/**
  * Настройка файловой системы
  */
 $config['ufs']['system_encoding'] = 'UTF-8';
@@ -66,7 +74,7 @@ $config['optimize']['js_combine'] = 0;
 $config['optimize']['js_compress'] = 0;
 $config['optimize']['css_combine'] = 0;
 $config['optimize']['css_compress'] = 0;
-$config['optimize']['less_combine'] = 0;
+$config['optimize']['less_combine'] = 1;
 
 
 $config['symlinks'] = array('//' => dirname(dirname(__FILE__)) . '/public/');

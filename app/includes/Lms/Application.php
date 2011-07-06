@@ -235,7 +235,10 @@ class Lms_Application
     {
         ini_set('max_execution_time', 1000);
         header("Content-type:text/html;charset=utf-8");
-        set_magic_quotes_runtime(FALSE);
+        if(get_magic_quotes_runtime())
+        {
+            set_magic_quotes_runtime(false);
+        }
         static $alreadyStriped = false;
         if (get_magic_quotes_gpc() || !$alreadyStriped) {
             $_COOKIE = Lms_Array::recursiveStripSlashes($_COOKIE);
