@@ -1,11 +1,99 @@
 I. Системные требования.
-    ОС: Linux, FreeBSD
+    ОС: Linux, FreeBSD, Windows
     Вебсервер: Apache ( с модулем mod_rewrite и включенной обработкой .htaccess), nginx
     PHP: 5.3 с поддержкой mbstring, iconv, mcrypt, mysql, hash, session, gd, dom, bcmath, ctype, json, simplexml
     MySQL: 5.0 и выше
 	
 II. Инсталляция.
-a) Ручная из репозиториев
+a) Автоматизированная из дистрибутивной сборки
+    1. Создать директорию для скрипта и распаковать содержимое папки lms-sdk архива. Например, чтобы
+    /home/mysite.com/www/lms-sdk/[app, lms-jsf, media, templates, api.php, index.php...]
+    было доступно как:
+    http://mysite.com/lms-sdk
+    
+    2. Открыть в браузере каталог install/ (например, http://mysite.com/lms-sdk/install)
+       и провести инсталляцию.
+
+    3. Для большей безопасности убедиться что каталог http://mysite.com/lms-sdk/app/ не доступен через браузер.
+
+    4. Удалить каталог install/
+
+    5. Открыть скрипт (http://mysite.com/lms-sdk) в браузере.
+
+    6. Для большей безопасности убедиться, что каталог http://mysite.com/lms-sdk/app/ не доступен через браузер.
+    
+    7. Добавить фильм http://mysite.com/lms-sdk/movies/add
+    
+    8. Убедится, что скрипты парсинга персоналий и скачивания трейлеров работают:
+        /app/tasks/global/parser.php
+        /app/tasks/trailers-download.php
+
+        и добавить их в crontab (Unix):
+        */5 * * * * /path/to/lms-sdk/app/tasks/global/parser.php 2>&1 >/dev/null
+        */5 * * * * /path/to/lms-sdk/app/tasks/trailers-download.php 2>&1 >/dev/null
+
+        или в планировщик Windows (запуск 1 раз в 5 минут или по желанию):
+        c:\php\php.exe c:\www/lms-sdk/app/tasks/global/parser.php
+        c:\php\php.exe c:\www/lms-sdk/app/tasks/trailers-download.php
+
+б) Ручная из дистрибутивной сборки
+    1. Создать директорию для скрипта и распаковать содержимое папки lms-sdk архива. Например, чтобы
+    /home/mysite.com/www/lms-sdk/[app, lms-jsf, media, templates, api.php, index.php...]
+    было доступно как:
+    http://mysite.com/lms-sdk
+
+    1а) Если в качестве вебсервера используется nginx, настроить его следующим образом:
+        location /lms-sdk {
+            if (!-e $request_filename) {
+                rewrite  ^/lms-sdk/.*$  /lms-sdk/index.php  last;
+                break;
+            }
+        }
+        location /lms-sdk/app {
+            deny all;
+        }
+
+    1б) Для Apache убедится, что обработка .htaccess включена. 
+
+    2. Создать базу данных MySQL в кодировке utf8 и запустить в ней SQL-скрипты /app/db/schema.sql и /app/db/data.sql
+    
+    3. Сделать копии (исходные файлы должны быть сохранены) файлов:
+        /config.dist.php -> /config.php
+        /app/config.dist.php -> /app/config.php
+        /app/local.settings.dist.php -> /app/local.settings.php
+    
+    4. В файле local.settings.php настроить параметры:
+        $config['parser_service']['username']
+        $config['parser_service']['password']
+        $config['databases']['main']
+    
+    5. Установить права на запись (если отсутствуют) для директорий:
+        /media
+        /app/
+        /app/logs
+        /app/includes
+        /app/includes/Lms/Item/Struct
+        
+    6. Открыть скрипт (http://mysite.com/lms-sdk) в браузере.
+
+    7. Для большей безопасности убедиться, что каталог http://mysite.com/lms-sdk/app/ не доступен через браузер.
+    
+    8. Добавить фильм http://mysite.com/lms-sdk/movies/add
+    
+    9. Убедится, что скрипты парсинга персоналий и скачивания трейлеров работают:
+        /app/tasks/global/parser.php
+        /app/tasks/trailers-download.php
+
+        и добавить их в crontab (Unix):
+        */5 * * * * /path/to/lms-sdk/app/tasks/global/parser.php 2>&1 >/dev/null
+        */5 * * * * /path/to/lms-sdk/app/tasks/trailers-download.php 2>&1 >/dev/null
+
+        или в планировщик Windows (запуск 1 раз в 5 минут или по желанию):
+        c:\php\php.exe c:\www/lms-sdk/app/tasks/global/parser.php
+        c:\php\php.exe c:\www/lms-sdk/app/tasks/trailers-download.php
+
+
+в) Ручная из репозиториев
     1. В домашней директории сайта (например, /www/mysite.com) создать каталог /apps и подкаталоги:
         /lib  <-- https://github.com/lanmediaservice/lms-lib
         /sharelib <-- https://github.com/lanmediaservice/lms-sharelib
@@ -30,7 +118,7 @@ a) Ручная из репозиториев
         в) Настройкой переменной root в nginx:
             root /www/mysite.com/apps/lms-sdk/public;
 
-    4. Создать базу данных MySQL в кодировке utf8 и запустить в ней SQL-скрипт /apps/lms-sdk/app/db/schema.sql
+    4. Создать базу данных MySQL в кодировке utf8 и запустить в ней SQL-скрипт /apps/lms-sdk/db/schema.sql и /apps/lms-sdk/db/data.sql
     
     5. В директории /apps/lms-sdk сделать копии (исходные файлы должны быть сохранены) файлов:
         /public/config.dist.php -> /public/config.php
@@ -43,15 +131,12 @@ a) Ручная из репозиториев
         $config['databases']['main']
     
     7. В директории /apps/lms-sdk установить права на запись (если отсутствуют) для директорий:
-        /media
+        /public/media
         /app/
         /app/logs
         /app/includes
         /app/includes/Lms/Item/Struct
         
-б) Ручная из дистрибутивной сборки
-   Пока не реализовано...
-
 
 По всем вопросам обращаться:
 WWW:   http://support.lanmediaservice.com/
